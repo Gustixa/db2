@@ -1,0 +1,18 @@
+CUST_ID (ID del Cliente): Identificación del titular de la tarjeta de crédito (Categórico).
+BALANCE (Saldo): Cantidad de dinero restante en la cuenta del cliente para realizar compras.
+BALANCE_FREQUENCY (Frecuencia de Actualización del Saldo): Con qué frecuencia se actualiza el saldo, con una puntuación entre 0 y 1 (1 = actualización frecuente, 0 = actualización no frecuente).
+PURCHASES (Compras): Monto de las compras realizadas desde la cuenta.
+ONEOFF_PURCHASES (Compras en una Sola Transacción): Monto máximo de compra realizado de una sola vez.
+INSTALLMENTS_PURCHASES (Compras a Plazos): Monto de las compras realizadas en cuotas.
+CASH_ADVANCE (Adelanto en Efectivo): Dinero en efectivo proporcionado por el usuario.
+PURCHASES_FREQUENCY (Frecuencia de Compras): Con qué frecuencia se realizan las compras, con una puntuación entre 0 y 1 (1 = compra frecuente, 0 = compra no frecuente).
+ONEOFFPURCHASESFREQUENCY (Frecuencia de Compras en una Sola Transacción): Con qué frecuencia se realizan compras en una sola transacción (1 = compra frecuente, 0 = compra no frecuente).
+PURCHASESINSTALLMENTSFREQUENCY (Frecuencia de Compras a Plazos): Con qué frecuencia se realizan compras a plazos (1 = compra frecuente, 0 = compra no frecuente).
+CASHADVANCEFREQUENCY (Frecuencia de Adelanto en Efectivo): Con qué frecuencia se paga el adelanto en efectivo.
+CASHADVANCETRX (Número de Transacciones de Adelanto en Efectivo): Cantidad de transacciones realizadas con "Adelanto en Efectivo".
+PURCHASES_TRX (Número de Transacciones de Compra): Cantidad de transacciones de compra realizadas.
+CREDIT_LIMIT (Límite de Crédito): Límite de la tarjeta de crédito para el usuario.
+PAYMENTS (Pagos): Monto de los pagos realizados por el usuario.
+MINIMUM_PAYMENTS (Pagos Mínimos): Monto mínimo de pagos realizados por el usuario.
+PRCFULLPAYMENT (Porcentaje de Pago Completo): Porcentaje del pago total realizado por el usuario.
+TENURE (Plazo): Duración del servicio de la tarjeta de crédito para el usuario.
