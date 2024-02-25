@@ -126,7 +126,14 @@ for _ in range(1000):
         "casa_productora": random.choice(casas_productoras_ids),  # Referencia a una casa productora
         "en_cartelera": es_cartelera
     }
-    db.peliculas.insert_one(pelicula)
+    
+    pelicula_id = db.peliculas.insert_one(pelicula).inserted_id
+
+    # Actualizar información de actores con las películas en las que participaron
+    db.actores.update_many(
+        {"_id": {"$in": actores_seleccionados}},
+        {"$addToSet": {"peliculas_participadas": pelicula_id}}
+    )
 
 # Cerrar la conexión
 client.close()
