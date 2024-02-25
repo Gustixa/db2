@@ -80,6 +80,12 @@ for _ in range(50):
 # Insertar datos falsos en la colección Películas utilizando referencias
 for _ in range(1000):
     es_cartelera = random.choice([True, False])  # Indica si la película está en la cartelera
+    num_actores = random.randint(3, 5)
+    
+    # Seleccionar actores al azar
+    actores_seleccionados = random.sample(actores_ids, num_actores)
+    
+    # Insertar la película
     pelicula = {
         "titulo": fake.text(20),
         "genero": random.choice(generos_ids),
@@ -87,7 +93,7 @@ for _ in range(1000):
         "anio_lanzamiento": fake.year(),
         "sinopsis": fake.text(),
         "clasificacion_edad": random.choice(["PG", "PG-13", "R"]),
-        "actores": random.sample(actores_ids, random.randint(3, 5)),
+        "actores": actores_seleccionados,
         "taquilla": taquilla_id,
         "resenas": random.sample(resenas_ids, random.randint(1, 3)),
         "premios": random.sample(premios_ids, random.randint(1, 3)),
@@ -95,7 +101,13 @@ for _ in range(1000):
         "casa_productora": random.choice(casas_productoras_ids),  # Referencia a una casa productora
         "en_cartelera": es_cartelera
     }
-    db.peliculas.insert_one(pelicula)
+    pelicula_id = db.peliculas.insert_one(pelicula).inserted_id
+    
+    # Actualizar información de actores con las películas en las que participaron
+    db.actores.update_many(
+        {"_id": {"$in": actores_seleccionados}},
+        {"$addToSet": {"peliculas_participadas": pelicula_id}}
+    )
 
 # Cerrar la conexión
 client.close()
