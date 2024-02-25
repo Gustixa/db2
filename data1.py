@@ -41,7 +41,8 @@ for _ in range(200):
     resena = {
         "comentario": fake.text(),
         "calificacion": random.randint(1, 5),
-        "fecha_resena": fake.date()
+        "fecha_resena": fake.date(),
+        "usuario": fake.user_name()  # Añadido el nombre de usuario a la reseña
     }
     resena_id = db.resenas.insert_one(resena).inserted_id
     resenas_ids.append(resena_id)
@@ -77,6 +78,22 @@ for _ in range(50):
     }
     casa_productora_id = db.casas_productoras.insert_one(casa_productora).inserted_id
     casas_productoras_ids.append(casa_productora_id)
+
+# Insertar datos falsos en la colección Usuarios
+usuarios_ids = []
+for _ in range(50):
+    usuario_tipo = random.choice(['administrador', 'usuario_comun'])
+    usuario = {
+        "nombre_usuario": fake.user_name(),
+        "contrasena": fake.password(),
+        "correo": fake.email(),
+        "fecha_creacion": fake.date(),
+        "fecha_actualizacion": fake.date(),
+        "tipo": usuario_tipo  # Campo que indica si es administrador o usuario común
+    }
+    usuario_id = db.usuarios.insert_one(usuario).inserted_id
+    usuarios_ids.append(usuario_id)
+
 # Insertar datos falsos en la colección Películas utilizando referencias
 for _ in range(1000):
     es_cartelera = random.choice([True, False])  # Indica si la película está en la cartelera
@@ -85,7 +102,10 @@ for _ in range(1000):
     # Seleccionar actores al azar
     actores_seleccionados = random.sample(actores_ids, num_actores)
     
-    # Insertar la película
+    # Seleccionar usuario al azar para la reseña
+    usuario_resena = random.choice(usuarios_ids)
+    
+    # Insertar la película con reseña embebida
     pelicula = {
         "titulo": fake.text(20),
         "genero": random.choice(generos_ids),
@@ -95,19 +115,18 @@ for _ in range(1000):
         "clasificacion_edad": random.choice(["PG", "PG-13", "R"]),
         "actores": actores_seleccionados,
         "taquilla": taquilla_id,
-        "resenas": random.sample(resenas_ids, random.randint(1, 3)),
+        "resenas": {
+            "comentario": fake.text(),
+            "calificacion": random.randint(1, 5),
+            "fecha_resena": fake.date(),
+            "usuario": usuario_resena
+        },
         "premios": random.sample(premios_ids, random.randint(1, 3)),
         "staff_produccion": random.sample(staff_ids, random.randint(1, 5)),
         "casa_productora": random.choice(casas_productoras_ids),  # Referencia a una casa productora
         "en_cartelera": es_cartelera
     }
-    pelicula_id = db.peliculas.insert_one(pelicula).inserted_id
-    
-    # Actualizar información de actores con las películas en las que participaron
-    db.actores.update_many(
-        {"_id": {"$in": actores_seleccionados}},
-        {"$addToSet": {"peliculas_participadas": pelicula_id}}
-    )
+    db.peliculas.insert_one(pelicula)
 
 # Cerrar la conexión
 client.close()
