@@ -135,5 +135,34 @@ for _ in range(1000):
         {"$addToSet": {"peliculas_participadas": pelicula_id}}
     )
 
+# Insertar datos falsos en la colección Proyecciones y actualizar información de películas con las proyecciones asociadas
+proyecciones_ids = []
+for _ in range(500):
+    sala = fake.word()
+    asientos_vendidos = random.randint(50, 200)
+    dolares_recaudados = random.randint(5000, 20000)
+    fecha_proyeccion = fake.date_time_this_year()
+
+    # Seleccionar película al azar para la proyección
+    pelicula_proyeccion = random.choice(list(db.peliculas.find({}, {"_id": 1})))
+    
+    # Insertar la proyección con referencia a la película
+    proyeccion = {
+        "sala": sala,
+        "asientos_vendidos": asientos_vendidos,
+        "dolares_recaudados": dolares_recaudados,
+        "fecha_proyeccion": fecha_proyeccion,
+        "pelicula": pelicula_proyeccion["_id"]
+    }
+
+    proyeccion_id = db.proyecciones.insert_one(proyeccion).inserted_id
+    proyecciones_ids.append(proyeccion_id)
+
+    # Actualizar información de películas con las proyecciones asociadas
+    db.peliculas.update_one(
+        {"_id": pelicula_proyeccion["_id"]},
+        {"$addToSet": {"proyecciones": proyeccion_id}}
+    )
+
 # Cerrar la conexión
 client.close()
